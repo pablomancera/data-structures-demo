@@ -1,0 +1,1 @@
+list = library('list', 'src/list.c', include_directories : lib_inc)
