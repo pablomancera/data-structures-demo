@@ -249,7 +249,7 @@ void list_print_all(list *a) {
         printf("List is empty\n");
     } else {
         struct node *data = a->head;
-        printf("The values on the list are: [");
+        printf("The values in the list are: [");
         while (data) {
             printf("'%c', ", data->key);
             data = data->nextNode;
