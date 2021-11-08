@@ -48,7 +48,7 @@ void list_pop_front(list *a) {
     struct node *old_data = a->head;
     struct node *new_data = old_data->nextNode;
     
-    a->head = a->head == a->tail ? a->tail = NULL : new_data;
+    a->head = (a->head == a->tail) ? a->tail = NULL : new_data;
 
     free(old_data);
 }
@@ -119,7 +119,7 @@ bool list_find_key(list *a, char chr) {
 
     while (data->key != chr) {
         if (!data) {
-            return false;
+            return true;
         }
         data = data->nextNode;
     }

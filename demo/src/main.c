@@ -13,7 +13,7 @@ int main() {
     }
 
     char *string2 = (" ,eyO");
-    struct node **nodes_front= malloc(strlen(string2) * sizeof(struct node*));
+    struct node **nodes_front = malloc(strlen(string2) * sizeof(struct node*));
 
     for (int i = 0; i < strlen(string2); i++) {
         nodes_front[i] = list_push_front(&a, string2[i]);
