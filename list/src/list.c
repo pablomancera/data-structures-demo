@@ -19,7 +19,7 @@ struct node *list_push_front(list *a, char chr) {
         abort();
     }
     newData->key = chr;
-    newData->nextNode = a->head;
+    newData->next_node = a->head;
 
     if (list_is_empty(a)) {
         a->head = a->tail = newData;
@@ -46,7 +46,7 @@ void list_pop_front(list *a) {
         return;
     }
     struct node *old_data = a->head;
-    struct node *new_data = old_data->nextNode;
+    struct node *new_data = old_data->next_node;
     
     a->head = (a->head == a->tail) ? a->tail = NULL : new_data;
 
@@ -66,13 +66,13 @@ struct node *list_push_back(list *a, char chr) {
     }
 
     new_data->key = chr;
-    new_data->nextNode = NULL;
+    new_data->next_node = NULL;
 
     if (list_is_empty(a)) {
         a->head = a->tail = new_data;
     } else {
         struct node *old_data = a->tail;
-        old_data->nextNode = a->tail = new_data;  
+        old_data->next_node = a->tail = new_data;  
     }
 
     return new_data;
@@ -101,10 +101,10 @@ void list_pop_back(list *a) {
         a->head = a->tail = NULL;
         free(old_data);
     } else {
-        while (new_data->nextNode->nextNode) {
-            new_data = new_data->nextNode;
+        while (new_data->next_node->next_node) {
+            new_data = new_data->next_node;
         }
-        new_data->nextNode = NULL;
+        new_data->next_node = NULL;
         a->tail = new_data;
         free(old_data);
     }
@@ -121,7 +121,7 @@ bool list_find_key(list *a, char chr) {
         if (!data) {
             return false;
         }
-        data = data->nextNode;
+        data = data->next_node;
     }
     return true;
 }
@@ -141,21 +141,21 @@ void list_erase_key(list *a, char chr) {
         if (list_is_empty(a)) return;
     }
     //Pop next matching node
-    while (new_data->nextNode) {
-        old_data = new_data->nextNode;
+    while (new_data->next_node) {
+        old_data = new_data->next_node;
         if (old_data->key == chr) {
             if (old_data == a->tail) {
-                new_data->nextNode = NULL;
+                new_data->next_node = NULL;
                 a->tail = new_data;
                 free(old_data);
                 return;
             } else {
-                new_data->nextNode = old_data->nextNode;
+                new_data->next_node = old_data->next_node;
                 free(old_data);
                 continue;
             }
         }
-        new_data = new_data->nextNode;
+        new_data = new_data->next_node;
     }
 }
 
@@ -179,12 +179,12 @@ struct node *list_add_before(list *a, struct node *node, char chr) {
 
     struct node *old_data = a->head;
 
-    while (old_data->nextNode != node) {
-        if (!old_data->nextNode) {
+    while (old_data->next_node != node) {
+        if (!old_data->next_node) {
             fprintf(stderr, "Node %p does not exist in list %p @ list add_before", node, a);
             return NULL;
         }
-        old_data = old_data->nextNode;
+        old_data = old_data->next_node;
     }
 
     struct node *new_data = malloc(sizeof(struct node));
@@ -195,8 +195,8 @@ struct node *list_add_before(list *a, struct node *node, char chr) {
 
     new_data->key = chr;
 
-    new_data->nextNode = old_data->nextNode;
-    old_data->nextNode = new_data;
+    new_data->next_node = old_data->next_node;
+    old_data->next_node = new_data;
 
     return new_data;
 }
@@ -209,7 +209,7 @@ struct node *list_add_after(list *a, struct node *node, char chr) {
         fprintf(stderr, "Cannot allocate null char @ list add_before\n");
         return NULL;
     }
-    
+
     struct node *old_data = a->head;
 
     while (old_data != node) {
@@ -217,7 +217,7 @@ struct node *list_add_after(list *a, struct node *node, char chr) {
             fprintf(stderr, "Node %p does not exist in list %p @ list add_before", node, a);
             return NULL;            
         }
-        old_data = old_data->nextNode;
+        old_data = old_data->next_node;
     }
 
     struct node *new_data = malloc(sizeof(struct node));
@@ -229,11 +229,11 @@ struct node *list_add_after(list *a, struct node *node, char chr) {
     new_data->key = chr;
 
     if (old_data == a->tail) {
-        new_data->nextNode = NULL;
-        old_data->nextNode = a->tail = new_data;
+        new_data->next_node = NULL;
+        old_data->next_node = a->tail = new_data;
     } else {
-        new_data->nextNode = old_data->nextNode;
-        old_data->nextNode = new_data;
+        new_data->next_node = old_data->next_node;
+        old_data->next_node = new_data;
     }
 
     return new_data;
@@ -247,7 +247,7 @@ void list_print_all(list *a) {
         printf("The values in the list are: [");
         while (data) {
             printf("'%c', ", data->key);
-            data = data->nextNode;
+            data = data->next_node;
         }
         printf("]\n");
     }
@@ -260,7 +260,7 @@ void list_to_string(list *a) {
         struct node *data = a->head;
         while (data) {
             printf("%c", data->key);
-            data = data->nextNode;
+            data = data->next_node;
         }
         printf("\n");
     }

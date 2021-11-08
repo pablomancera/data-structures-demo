@@ -9,7 +9,7 @@ typedef struct {
 
 struct node {
     char key;
-    struct node *nextNode;
+    struct node *next_node;
 };
 
 list new_list();
