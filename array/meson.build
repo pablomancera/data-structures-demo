@@ -1,0 +1,1 @@
+array = library('array', 'src/array.c', include_directories : lib_inc)

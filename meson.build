@@ -3,7 +3,11 @@ project('data_struct_demo', 'c',
   default_options : ['default_library=static']
 )
 
-lib_inc = include_directories('list/include')
+lib_inc = include_directories(
+  'list/include',
+  'array/include'
+)
 
 subdir('list')
+subdir('array')
 subdir('demo')

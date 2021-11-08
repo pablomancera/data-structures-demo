@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "list.h"
+#include "array.h"
 
 int main() {
     list a = new_list();
