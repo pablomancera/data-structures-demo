@@ -119,11 +119,11 @@ bool list_find_key(list *a, char chr) {
 
     while (data->key != chr) {
         if (!data) {
-            return true;
+            return false;
         }
         data = data->nextNode;
     }
-    return false;
+    return true;
 }
 
 void list_erase_key(list *a, char chr) {
