@@ -22,12 +22,12 @@ int main() {
     list_print_all(&a);
 
     for (int i = 0; i < strlen(string1); i++) {
-        list_add_before(&a, nodes_back[i], '.');
         list_add_after(&a, nodes_back[i], ',');
+        list_add_before(&a, nodes_back[i], '.');
     }
     for (int i = 0; i < strlen(string2); i++) {
-        list_add_before(&a, nodes_front[i], ':');
         list_add_after(&a, nodes_front[i], ';');
+        list_add_before(&a, nodes_front[i], ':');
     }
 
     list_to_string(&a);

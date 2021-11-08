@@ -209,12 +209,7 @@ struct node *list_add_after(list *a, struct node *node, char chr) {
         fprintf(stderr, "Cannot allocate null char @ list add_before\n");
         return NULL;
     }
-
-    if (a->head == node) {
-        struct node *new_data = list_push_front(a, chr);
-        return new_data;
-    }
-
+    
     struct node *old_data = a->head;
 
     while (old_data != node) {
