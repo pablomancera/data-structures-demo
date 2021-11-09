@@ -98,14 +98,15 @@ void list_pop_back(list *a) {
     if (old_data == new_data) {
         a->head = a->tail = NULL;
         free(old_data);
-    } else {
-        while (new_data->next_node->next_node) {
-            new_data = new_data->next_node;
-        }
-        new_data->next_node = NULL;
-        a->tail = new_data;
-        free(old_data);
+        return;
     }
+    
+    while (new_data->next_node->next_node) {
+        new_data = new_data->next_node;
+    }
+    new_data->next_node = NULL;
+    a->tail = new_data;
+    free(old_data);
 }
 
 bool list_find_key(list *a, char chr) {
@@ -240,26 +241,27 @@ struct node *list_add_after(list *a, struct node *node, char chr) {
 void list_print_all(list *a) {
     if (list_is_empty(a)) {
         printf("List is empty\n");
-    } else {
-        struct node *data = a->head;
-        printf("The values in the list are: [");
-        while (data) {
-            printf("'%c', ", data->key);
-            data = data->next_node;
-        }
-        printf("]\n");
     }
+    
+    struct node *data = a->head;
+    printf("The values in the list are: [");
+    while (data) {
+        printf("'%c', ", data->key);
+        data = data->next_node;
+    }
+    printf("]\n");
 }
 
 void list_to_string(list *a) {
     if (list_is_empty(a)) {
         printf("List is empty\n");
-    } else {
-        struct node *data = a->head;
-        while (data) {
-            printf("%c", data->key);
-            data = data->next_node;
-        }
-        printf("\n");
+        return;
     }
+
+    struct node *data = a->head;
+    while (data) {
+        printf("%c", data->key);
+        data = data->next_node;
+    }
+    printf("\n");
 }
