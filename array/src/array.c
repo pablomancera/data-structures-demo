@@ -9,7 +9,7 @@ array new_array() {
 	return a;
 }
 
-char array_get(array *a, uint index) {
+char array_get(array *a, unsigned int index) {
 	if (!a || !a->data) {
 		fprintf(stderr, "NULL array @ array get\n");
 		return '\0';
@@ -22,7 +22,7 @@ char array_get(array *a, uint index) {
 	return a->data[index];
 }
 
-void array_set(array *a, uint index, char chr) {
+void array_set(array *a, unsigned int index, char chr) {
 	if (!a || !a->data) {
 		fprintf(stderr, "NULL array @ array set\n");
 		return;
@@ -60,7 +60,7 @@ char array_push_back(array *a, char chr) {
 	return array_push_back(a, chr);
 }
 
-void array_remove(array *a, uint index) {
+void array_remove(array *a, unsigned int index) {
 	if (!a || !a->data) {
 		fprintf(stderr, "NULL array @ array remove\n");
 		return;
@@ -78,7 +78,7 @@ void array_remove(array *a, uint index) {
     a->size--;
 }
 
-uint array_size(array *a) {
+unsigned int array_size(array *a) {
     return a->size;
 }
 
