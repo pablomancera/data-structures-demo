@@ -5,9 +5,9 @@ list new_list() {
     return a;
 }
 
-struct node *list_push_front(list *a, char chr) {
+struct node *list_push_front(list *a, wchar_t chr) {
     if (chr == '\0') {
-        fprintf(stderr, "Cannot allocate null char @ list push_front\n");
+        fprintf(stderr, "Cannot allocate null wchar_t @ list push_front\n");
         return NULL;
     }
 
@@ -51,9 +51,9 @@ void list_pop_front(list *a) {
     free(old_data);
 }
 
-struct node *list_push_back(list *a, char chr) {
+struct node *list_push_back(list *a, wchar_t chr) {
     if (chr == '\0') {
-        fprintf(stderr, "Cannot allocate null char @ list push_back\n");
+        fprintf(stderr, "Cannot allocate null wchar_t @ list push_back\n");
         return NULL;
     }
 
@@ -109,7 +109,7 @@ void list_pop_back(list *a) {
     free(old_data);
 }
 
-bool list_find_key(list *a, char chr) {
+bool list_find_key(list *a, wchar_t chr) {
     if (list_is_empty(a)) {
         return false;
     }
@@ -125,7 +125,7 @@ bool list_find_key(list *a, char chr) {
     return true;
 }
 
-void list_erase_key(list *a, char chr) {
+void list_erase_key(list *a, wchar_t chr) {
     if (list_is_empty(a)) {
         return;
     }
@@ -162,12 +162,12 @@ inline bool list_is_empty(list *a) {
     return !a->head;
 }
 
-struct node *list_add_before(list *a, struct node *node, char chr) {
+struct node *list_add_before(list *a, struct node *node, wchar_t chr) {
     if (list_is_empty(a)) {
         return NULL;
     }
     if (chr == '\0') {
-        fprintf(stderr, "Cannot allocate null char @ list add_before\n");
+        fprintf(stderr, "Cannot allocate null wchar_t @ list add_before\n");
         return NULL;
     }
 
@@ -200,12 +200,12 @@ struct node *list_add_before(list *a, struct node *node, char chr) {
     return new_data;
 }
 
-struct node *list_add_after(list *a, struct node *node, char chr) {
+struct node *list_add_after(list *a, struct node *node, wchar_t chr) {
     if (list_is_empty(a)) {
         return NULL;
     }
     if (chr == '\0') {
-        fprintf(stderr, "Cannot allocate null char @ list add_before\n");
+        fprintf(stderr, "Cannot allocate null wchar_t @ list add_before\n");
         return NULL;
     }
 
@@ -240,28 +240,28 @@ struct node *list_add_after(list *a, struct node *node, char chr) {
 
 void list_print_all(list *a) {
     if (list_is_empty(a)) {
-        printf("List is empty\n");
+        wprintf(L"List is empty\n");
     }
     
     struct node *data = a->head;
-    printf("The values in the list are: [");
+    wprintf(L"The values in the list are: [");
     while (data) {
-        printf("'%c', ", data->key);
+        wprintf(L"'%lc', ", data->key);
         data = data->next_node;
     }
-    printf("]\n");
+    wprintf(L"]\n");
 }
 
 void list_to_string(list *a) {
     if (list_is_empty(a)) {
-        printf("List is empty\n");
+        wprintf(L"List is empty\n");
         return;
     }
 
     struct node *data = a->head;
     while (data) {
-        printf("%c", data->key);
+        wprintf(L"%lc", data->key);
         data = data->next_node;
     }
-    printf("\n");
+    wprintf(L"\n");
 }

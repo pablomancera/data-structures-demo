@@ -1,15 +1,16 @@
 #include "array.h"
+#include <stddef.h>
 
 array new_array() {
 	array a;
-	a.data = malloc(sizeof(char));
+	a.data = malloc(sizeof(wchar_t));
 	a.size = 0;
 	a.capacity = 1;
 
 	return a;
 }
 
-char array_get(array *a, unsigned int index) {
+wchar_t array_get(array *a, unsigned int index) {
 	if (!a || !a->data) {
 		fprintf(stderr, "NULL array @ array get\n");
 		return '\0';
@@ -22,7 +23,7 @@ char array_get(array *a, unsigned int index) {
 	return a->data[index];
 }
 
-void array_set(array *a, unsigned int index, char chr) {
+void array_set(array *a, unsigned int index, wchar_t chr) {
 	if (!a || !a->data) {
 		fprintf(stderr, "NULL array @ array set\n");
 		return;
@@ -35,7 +36,7 @@ void array_set(array *a, unsigned int index, char chr) {
 	a->data[index] = chr;
 }
 
-char array_push_back(array *a, char chr) {
+wchar_t array_push_back(array *a, wchar_t chr) {
 	if (!a || !a->data) {
 		fprintf(stderr, "NULL array @ array push_back\n");
 		return '\0';
@@ -48,7 +49,7 @@ char array_push_back(array *a, char chr) {
 
 	a->capacity *= 2;
 
-	char *tmp_array = realloc(a->data, a->capacity * sizeof(char));
+	wchar_t *tmp_array = realloc(a->data, a->capacity * sizeof(wchar_t));
 
 	if (!tmp_array) {
 		fprintf(stderr, "realloc() @ array push_back failed. Exiting...\n");
@@ -82,20 +83,20 @@ unsigned int array_size(array *a) {
     return a->size;
 }
 
-char *array_to_string(array *a) {
+wchar_t *array_to_string(array *a) {
 	if (!a || !a->data) {
 		fprintf(stderr, "NULL array @ array to_string\n");
 		return NULL;
 	}
 
-	char *str = malloc(a->size + 1 * sizeof(char));
+	wchar_t *str = malloc((a->size + 1) * sizeof(wchar_t));
 
 	if (!str) {
 		fprintf(stderr, "malloc() @ array to_string failed. Exiting...\n");
 		abort();
 	}
 
-	memcpy(str, a->data, a->size);
+	wmemcpy(str, a->data, a->size);
 	str[a->size] = '\0';
 
 	return str;
