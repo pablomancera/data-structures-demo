@@ -1,6 +1,8 @@
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include <wchar.h>
 #include <locale.h>
 #include "list.h"
@@ -8,80 +10,69 @@
 
 int main() {
 	setlocale(LC_ALL, "");
-	list a = new_list();
-	array arr = new_array();
-	wchar_t *string1 = L"¿Qué te parece si mañana jugamos fútbol?";
-	struct node **nodes_back = malloc(wcslen(string1) * sizeof(struct node *));
+	array a = new_array();
+	wchar_t chr = '\n';
 
-	for (int i = 0; i < wcslen(string1); i++) {
-		nodes_back[i] = list_push_back(&a, string1[i]);
-		array_push_back(&arr, string1[i]);
+	FILE *charptr = fopen("chars.txt", "r");
+
+	if (!charptr) {
+		wprintf(L"file failed to open");
+		abort();
 	}
 
-	wchar_t *string2 = L" ,eyO";
-	struct node **nodes_front = malloc(wcslen(string2) * sizeof(struct node *));
-
-	for (int i = 0; i < wcslen(string2); i++) {
-		nodes_front[i] = list_push_front(&a, string2[i]);
+	while (chr != WEOF) {
+		chr = getwc(charptr);
+		//wprintf(L"%lc", chr);
+		array_push_back(&a, chr);
 	}
 
-	wchar_t *arrstr = array_to_string(&arr);
+	fclose(charptr);
 
-	wprintf(L"Dynamic array string: %ls\n", arrstr);
-	wprintf(L"Dynamic array size: %d\n", array_size(&arr));
-	wprintf(L"Dynamic array capacity: %d\n", arr.capacity);
-	list_print_all(&a);
+	wprintf(L"aray size: %d", a.size);
 
-	free(arrstr);
+	clock_t begin = clock();
 
-	for (int i = 0; i < wcslen(string1); i++) {
-		list_add_before(&a, nodes_back[i], '<');
-		list_add_after(&a, nodes_back[i], '>');
-	}
-	for (int i = 0; i < wcslen(string2); i++) {
-		list_add_before(&a, nodes_front[i], '[');
-		list_add_after(&a, nodes_front[i], ']');
+	unsigned int longest_char = 0;
+	for (int i = 0; i < a.size - 1; i++) {
+		if (a.data[i] > longest_char) {
+			longest_char = a.data[i];
+		}
 	}
 
-	wprintf(L"The string in the list is: ");
-	list_to_string(&a);
+	bool *chars = calloc(longest_char, sizeof(bool));
 
-	wprintf(L"Let's print each string's char, one by one: ");
-	for (int i = 0; i <= array_size(&arr); i++) {
-		wprintf(L"%lc", array_get(&arr, i));
-	}
-	wprintf(L"\nNow let's set everything to 'e': ");
-
-	for (int i = 0; i <= array_size(&arr); i++) {
-		array_set(&arr, i, 'e');
-	}
-	arrstr = array_to_string(&arr);
-	wprintf(L"%ls\nOk, now back to the original string: ", arrstr);
-	free(arrstr);
-
-	for (int i = 0; i < wcslen(string1); i++) {
-		array_set(&arr, i, string1[i]);
+	// array nodup = new_array();
+	for (int i = 0; i < a.size-1; i++) {
+		if (!chars[a.data[i]]) {
+			chars[a.data[i]] = true;
+			// array_push_back(&nodup, a.data[i]);
+			continue;
+		}
+		a.data[i] = '\0';
 	}
 
-	arrstr = array_to_string(&arr);
-	wprintf(L"%ls\nFinally, let's remove each char one by one: \n", arrstr);
-
-	wprintf(L"String content: %ls\n", arrstr);
-	wprintf(L"Array size: %d\n", array_size(&arr));
-
-	free(arrstr);
-
-	int len = array_size(&arr);
-
-	for (int i = 0; i <= len; i++) {
-		array_remove(&arr, 0);
-		arrstr = array_to_string(&arr);
-		wprintf(L"String content: %ls\n", arrstr);
-		wprintf(L"Array size: %d\n", array_size(&arr));
-		free(arrstr);
+	wchar_t *start_addr = NULL;
+	int start_index = 0;
+	for (int i = 0; i < a.size; i++) {
+		if (a.data[i] == '\0' && !start_addr) {
+			start_addr = &a.data[i];
+			start_index = i;
+			continue;
+		}
+		if (a.data[i] != '\0' && start_addr) {
+			wmemcpy(start_addr, &a.data[i], (a.size) - i);
+			a.size -= i - start_index;
+			i -= start_index;
+			start_addr = NULL;
+		}
 	}
 
-	free(nodes_back);
-	free(nodes_front);
+	
+
+	clock_t end = clock();
+
+	// wprintf(L"\nNo dup array: %ls\nTime elapsed: %fs\n", array_to_string(&nodup), (double)(end-begin)/CLOCKS_PER_SEC);
+	wprintf(L"No dup array: %ls\nTime elapsed: %fs\n", array_to_string(&a), (double)(end-begin)/CLOCKS_PER_SEC);
+
 	return 0;
 }
