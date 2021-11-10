@@ -1,11 +1,13 @@
 #include "list.h"
+#include "array.h"
+#include <wchar.h>
 
 list new_list() {
-    list a = {NULL, NULL};
-    return a;
+    list l = {NULL, NULL};
+    return l;
 }
 
-struct node *list_push_front(list *a, wchar_t chr) {
+struct node *list_push_front(list *l, wchar_t chr) {
     if (chr == '\0') {
         fprintf(stderr, "Cannot allocate null wchar_t @ list push_front\n");
         return NULL;
@@ -17,41 +19,41 @@ struct node *list_push_front(list *a, wchar_t chr) {
         abort();
     }
     newData->key = chr;
-    newData->next_node = a->head;
+    newData->next_node = l->head;
 
-    if (list_is_empty(a)) {
-        a->head = a->tail = newData;
+    if (list_is_empty(l)) {
+        l->head = l->tail = newData;
     } else {
-        a->head = newData;
+        l->head = newData;
     }
 
     return newData;
 }
 
-struct node *list_top_front(list *a) {
-    if (list_is_empty(a)) {
+struct node *list_top_front(list *l) {
+    if (list_is_empty(l)) {
         fprintf(stderr, "List is empty @ list top_front\n");
         return NULL;
     }
 
-    struct node *data = a->head;
+    struct node *data = l->head;
     return data;
 }
 
-void list_pop_front(list *a) {
-    if (list_is_empty(a)) {
+void list_pop_front(list *l) {
+    if (list_is_empty(l)) {
         fprintf(stderr, "List point to nothing @ list pop_front\n");
         return;
     }
-    struct node *old_data = a->head;
+    struct node *old_data = l->head;
     struct node *new_data = old_data->next_node;
     
-    a->head = (a->head == a->tail) ? a->tail = NULL : new_data;
+    l->head = (l->head == l->tail) ? l->tail = NULL : new_data;
 
     free(old_data);
 }
 
-struct node *list_push_back(list *a, wchar_t chr) {
+struct node *list_push_back(list *l, wchar_t chr) {
     if (chr == '\0') {
         fprintf(stderr, "Cannot allocate null wchar_t @ list push_back\n");
         return NULL;
@@ -66,37 +68,37 @@ struct node *list_push_back(list *a, wchar_t chr) {
     new_data->key = chr;
     new_data->next_node = NULL;
 
-    if (list_is_empty(a)) {
-        a->head = a->tail = new_data;
+    if (list_is_empty(l)) {
+        l->head = l->tail = new_data;
     } else {
-        struct node *old_data = a->tail;
-        old_data->next_node = a->tail = new_data;  
+        struct node *old_data = l->tail;
+        old_data->next_node = l->tail = new_data;  
     }
 
     return new_data;
 }
 
-struct node *list_top_back(list *a) {
-    if (list_is_empty(a)) {
+struct node *list_top_back(list *l) {
+    if (list_is_empty(l)) {
         fprintf(stderr, "List is empty @ list top_front\n");
         return NULL;
     }
 
-    struct node *data = a->tail;
+    struct node *data = l->tail;
     return data;
 
 }
 
-void list_pop_back(list *a) {
-    if (!a->tail) {
+void list_pop_back(list *l) {
+    if (!l->tail) {
         fprintf(stderr, "List point to nothing @ list pop_back\n");
         return;
     }
-    struct node *old_data = a->tail;
-    struct node *new_data = a->head;
+    struct node *old_data = l->tail;
+    struct node *new_data = l->head;
 
     if (old_data == new_data) {
-        a->head = a->tail = NULL;
+        l->head = l->tail = NULL;
         free(old_data);
         return;
     }
@@ -105,16 +107,16 @@ void list_pop_back(list *a) {
         new_data = new_data->next_node;
     }
     new_data->next_node = NULL;
-    a->tail = new_data;
+    l->tail = new_data;
     free(old_data);
 }
 
-bool list_find_key(list *a, wchar_t chr) {
-    if (list_is_empty(a)) {
+bool list_find_key(list *l, wchar_t chr) {
+    if (list_is_empty(l)) {
         return false;
     }
 
-    struct node *data = a->head;
+    struct node *data = l->head;
 
     while (data->key != chr) {
         if (!data) {
@@ -125,27 +127,27 @@ bool list_find_key(list *a, wchar_t chr) {
     return true;
 }
 
-void list_erase_key(list *a, wchar_t chr) {
-    if (list_is_empty(a)) {
+void list_erase_key(list *l, wchar_t chr) {
+    if (list_is_empty(l)) {
         return;
     }
     
     struct node *old_data, *new_data;
-    old_data = new_data = a->head;
+    old_data = new_data = l->head;
 
     //Pop front while header match
-    while (a->head->key == chr) {
-        list_pop_front(a);
-        new_data = old_data = a->head;
-        if (list_is_empty(a)) return;
+    while (l->head->key == chr) {
+        list_pop_front(l);
+        new_data = old_data = l->head;
+        if (list_is_empty(l)) return;
     }
     //Pop next matching node
     while (new_data->next_node) {
         old_data = new_data->next_node;
         if (old_data->key == chr) {
-            if (old_data == a->tail) {
+            if (old_data == l->tail) {
                 new_data->next_node = NULL;
-                a->tail = new_data;
+                l->tail = new_data;
                 free(old_data);
                 return;
             } else {
@@ -158,12 +160,12 @@ void list_erase_key(list *a, wchar_t chr) {
     }
 }
 
-inline bool list_is_empty(list *a) {
-    return !a->head;
+inline bool list_is_empty(list *l) {
+    return !l->head;
 }
 
-struct node *list_add_before(list *a, struct node *node, wchar_t chr) {
-    if (list_is_empty(a)) {
+struct node *list_add_before(list *l, struct node *node, wchar_t chr) {
+    if (list_is_empty(l)) {
         return NULL;
     }
     if (chr == '\0') {
@@ -171,16 +173,16 @@ struct node *list_add_before(list *a, struct node *node, wchar_t chr) {
         return NULL;
     }
 
-    if (a->head == node) {
-        struct node *new_data = list_push_front(a, chr);
+    if (l->head == node) {
+        struct node *new_data = list_push_front(l, chr);
         return new_data;
     }
 
-    struct node *old_data = a->head;
+    struct node *old_data = l->head;
 
     while (old_data->next_node != node) {
         if (!old_data->next_node) {
-            fprintf(stderr, "Node %p does not exist in list %p @ list add_before", node, a);
+            fprintf(stderr, "Node %p does not exist in list %p @ list add_before", node, l);
             return NULL;
         }
         old_data = old_data->next_node;
@@ -200,8 +202,8 @@ struct node *list_add_before(list *a, struct node *node, wchar_t chr) {
     return new_data;
 }
 
-struct node *list_add_after(list *a, struct node *node, wchar_t chr) {
-    if (list_is_empty(a)) {
+struct node *list_add_after(list *l, struct node *node, wchar_t chr) {
+    if (list_is_empty(l)) {
         return NULL;
     }
     if (chr == '\0') {
@@ -209,11 +211,11 @@ struct node *list_add_after(list *a, struct node *node, wchar_t chr) {
         return NULL;
     }
 
-    struct node *old_data = a->head;
+    struct node *old_data = l->head;
 
     while (old_data != node) {
         if (!old_data) {
-            fprintf(stderr, "Node %p does not exist in list %p @ list add_before", node, a);
+            fprintf(stderr, "Node %p does not exist in list %p @ list add_before", node, l);
             return NULL;            
         }
         old_data = old_data->next_node;
@@ -227,9 +229,9 @@ struct node *list_add_after(list *a, struct node *node, wchar_t chr) {
 
     new_data->key = chr;
 
-    if (old_data == a->tail) {
+    if (old_data == l->tail) {
         new_data->next_node = NULL;
-        old_data->next_node = a->tail = new_data;
+        old_data->next_node = l->tail = new_data;
     } else {
         new_data->next_node = old_data->next_node;
         old_data->next_node = new_data;
@@ -238,30 +240,41 @@ struct node *list_add_after(list *a, struct node *node, wchar_t chr) {
     return new_data;
 }
 
-void list_print_all(list *a) {
-    if (list_is_empty(a)) {
+void list_print_all(list *l) {
+    if (list_is_empty(l)) {
         wprintf(L"List is empty\n");
     }
     
-    struct node *data = a->head;
+    struct node *data = l->head;
     wprintf(L"The values in the list are: [");
-    while (data) {
+    while (data->next_node) {
         wprintf(L"'%lc', ", data->key);
         data = data->next_node;
     }
-    wprintf(L"]\n");
+    wprintf(L"'%lc']\n", data->key);
 }
 
-void list_to_string(list *a) {
-    if (list_is_empty(a)) {
+wchar_t *list_to_string(list *l) {
+    if (list_is_empty(l)) {
         wprintf(L"List is empty\n");
-        return;
+        return NULL;
     }
 
-    struct node *data = a->head;
+    struct node *data = l->head;
+    array a = new_array();
     while (data) {
-        wprintf(L"%lc", data->key);
+        array_push_back(&a, data->key);
         data = data->next_node;
     }
-    wprintf(L"\n");
+    wchar_t *str = array_to_string(&a);
+
+    array_free(&a);
+    
+    return str;
+}
+
+void list_free(list *l) {
+    while (!list_is_empty(l)) {
+        list_pop_back(l);
+    }
 }

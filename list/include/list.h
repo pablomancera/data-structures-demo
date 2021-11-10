@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <wchar.h>
+#include "array.h"
 
 typedef struct {
     struct node *head, *tail;
@@ -26,4 +27,5 @@ bool list_is_empty(list*);
 struct node *list_add_before(list*, struct node*, wchar_t);
 struct node *list_add_after(list*, struct node*, wchar_t);
 void list_print_all(list*);
-void list_to_string(list*);
+wchar_t *list_to_string(list*);
+void list_free(list*);

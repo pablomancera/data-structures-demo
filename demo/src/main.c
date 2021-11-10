@@ -10,15 +10,22 @@
 #include "array.h"
 
 void array_exercise(char *filename);
+void list_exercise(char *filename);
 
 int main() {
 	setlocale(LC_ALL, "");
-	
+
 	array_exercise("test_1k.txt");
 	array_exercise("test_10k.txt");
 	array_exercise("test_100k.txt");
 	array_exercise("test_1m.txt");
 	array_exercise("test_10m.txt");
+
+	list_exercise("test_1k.txt");
+	list_exercise("test_10k.txt");
+	list_exercise("test_100k.txt");
+	list_exercise("test_1m.txt");
+	list_exercise("test_10m.txt");
 
 	return 0;
 }
@@ -34,8 +41,17 @@ void array_exercise(char *filename) {
 		abort();
 	}
 
+	chr = fgetwc(fileptr);
+
+	if (chr == WEOF) {
+		fwprintf(stderr, L"file \"%s\" is empty. Exiting...\n", filename);
+		abort();
+	}
+
+	ungetwc(chr, fileptr);
+
 	// Stores all the file in a dynamic array
-	while ((chr = getwc(fileptr)) != WEOF) {
+	while ((chr = fgetwc(fileptr)) != WEOF) {
 		array_push_back(&a, chr);
 	}
 
@@ -44,6 +60,8 @@ void array_exercise(char *filename) {
 	for (int i = 0; i <= 100; i++) {
 		wprintf(L"-");
 	}
+
+	wprintf(L"\n\n-- Array test --");
 
 	wprintf(L"\n\nFile: \"%s\"\n", filename);
 	wprintf(L"Array size: %d\n", a.size);
@@ -70,14 +88,15 @@ void array_exercise(char *filename) {
 	}
 
 	wchar_t *arr_wchar_cursor = NULL; //Cursor that will override the array.
-	wchar_t *arr_start_wchar = NULL; //The adress at the start of a string.
-	wchar_t *arr_start_null = NULL; //The address at the start of null chars.
+	wchar_t *arr_start_wchar = NULL;  //The adress at the start of a string.
+	wchar_t *arr_start_null = NULL;	  //The address at the start of null chars.
 	bool is_reading_wchar = false;
 	unsigned int arr_size = a.size;
 	for (int i = 0; i <= arr_size; i++) {
 
 		//Finds and saves the addres of a string in array to arr_start_wchar
-		if (a.data[i] && !is_reading_wchar && arr_wchar_cursor && i <= arr_size) {
+		if (a.data[i] && !is_reading_wchar && arr_wchar_cursor &&
+				i <= arr_size) {
 			is_reading_wchar = true;
 			arr_start_wchar = &a.data[i];
 			continue;
@@ -85,8 +104,10 @@ void array_exercise(char *filename) {
 
 		//Copy memory pointed by arr_start_wchar to arr_wchar_cursor
 		if (is_reading_wchar && (!a.data[i] || i == arr_size)) {
-			unsigned int bytes_to_copy = (unsigned int) (&a.data[i] - arr_start_wchar);
-			unsigned int array_size_offset = (unsigned int) (arr_start_wchar - arr_start_null);
+			unsigned int bytes_to_copy =
+					(unsigned int)(&a.data[i] - arr_start_wchar);
+			unsigned int array_size_offset =
+					(unsigned int)(arr_start_wchar - arr_start_null);
 			wmemcpy(arr_wchar_cursor, arr_start_wchar, bytes_to_copy);
 			a.size -= array_size_offset;
 			arr_wchar_cursor += bytes_to_copy;
@@ -98,7 +119,8 @@ void array_exercise(char *filename) {
 
 		//Adjust the size of the dynamic array when no unique chars remains
 		if (i == arr_size) {
-			unsigned int array_size_offset = (unsigned int) (&a.data[i] - arr_start_null);
+			unsigned int array_size_offset =
+					(unsigned int)(&a.data[i] - arr_start_null);
 			a.size -= array_size_offset;
 			continue;
 		}
@@ -109,12 +131,14 @@ void array_exercise(char *filename) {
 			arr_start_null = &a.data[i];
 			continue;
 		}
-	}	
+	}
 
 	clock_t end = clock();
 
-	wprintf(L"No dup array: %ls\n", array_to_string(&a));
-	wprintf(L"Time elapsed: %fs\n", (double)(end-begin)/CLOCKS_PER_SEC);
+	wchar_t *string = array_to_string(&a);
+
+	wprintf(L"No dup array: %ls\n", string);
+	wprintf(L"Time elapsed: %fs\n", (double)(end - begin) / CLOCKS_PER_SEC);
 	wprintf(L"Array final size: %d\n", a.size);
 	wprintf(L"\n");
 	for (int i = 0; i <= 100; i++) {
@@ -124,4 +148,91 @@ void array_exercise(char *filename) {
 
 	array_free(&a);
 	free(chars);
+	free(string);
+}
+
+void list_exercise(char *filename) {
+	list l = new_list();
+	wchar_t chr = '\n';
+
+	FILE *fileptr = fopen(filename, "r");
+
+	if (!fileptr) {
+		fwprintf(stderr, L"file \"%s\" failed to open. Exiting...\n", filename);
+		abort();
+	}
+
+	chr = fgetwc(fileptr);
+
+	if (chr == WEOF) {
+		fwprintf(stderr, L"file \"%s\" is empty. Exiting...\n", filename);
+		abort();
+	}
+
+	ungetwc(chr, fileptr);
+
+	unsigned int i = 0;
+	// Stores all the file in a list
+	while ((chr = fgetwc(fileptr)) != WEOF) {
+		list_push_back(&l, chr);
+		i++;
+	}
+
+	fclose(fileptr);
+
+	for (int i = 0; i <= 100; i++) {
+		wprintf(L"-");
+	}
+
+	wprintf(L"\n\n-- List test --");
+
+	wprintf(L"\n\nFile: \"%s\"\n", filename);
+	wprintf(L"Number of characters: %d\n", i);
+
+	clock_t begin = clock();
+
+	struct node *data = l.head;
+
+	// Find the longest char in the file
+	unsigned int longest_char = 0;
+	while (data) {
+		if (data->key > longest_char) {
+			longest_char = data->key;
+		}
+		data = data->next_node;
+	}
+
+	data = l.head;
+
+	bool *chars = calloc(longest_char, sizeof(bool));
+
+	//Remove nodes with duplicated keys
+	chars[data->key] = true;
+	while (data->next_node) {
+		if (!chars[data->next_node->key]) {
+			chars[data->next_node->key] = true;
+			data = data->next_node;
+			continue;
+		}
+		struct node *old_data = data->next_node;
+		data->next_node = data->next_node->next_node;
+		if (old_data == l.tail)
+			l.tail = data;
+		free(old_data);
+	}
+
+	clock_t end = clock();
+
+	wchar_t *string = list_to_string(&l);
+	wprintf(L"No dup list: %ls\n", string);
+	wprintf(L"Time elapsed: %fs\n", (double)(end - begin) / CLOCKS_PER_SEC);
+	wprintf(L"\n");
+	for (int i = 0; i <= 100; i++) {
+		wprintf(L"-");
+	}
+	wprintf(L"\n\n");
+
+	list_free(&l);
+	free(chars);
+	free(string);
 }
