@@ -1,6 +1,4 @@
 #include "list.h"
-#include "array.h"
-#include <wchar.h>
 
 list new_list() {
     list l = {NULL, NULL};
