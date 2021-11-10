@@ -31,7 +31,8 @@ int main() {
 }
 
 void array_exercise(char *filename) {
-	array a = new_array();
+	array tmp_file_arr = new_array();
+	wchar_t *tmp_file_str = L"";
 	wchar_t chr = '\n';
 
 	FILE *fileptr = fopen(filename, "r");
@@ -52,7 +53,7 @@ void array_exercise(char *filename) {
 
 	// Stores all the file in a dynamic array
 	while ((chr = fgetwc(fileptr)) != WEOF) {
-		array_push_back(&a, chr);
+		array_push_back(&tmp_file_arr, chr);
 	}
 
 	fclose(fileptr);
@@ -64,9 +65,17 @@ void array_exercise(char *filename) {
 	wprintf(L"\n\n-- Array test --");
 
 	wprintf(L"\n\nFile: \"%s\"\n", filename);
-	wprintf(L"Array size: %d\n", a.size);
+	wprintf(L"Array size: %d\n", tmp_file_arr.size);
+
+	tmp_file_str = array_to_string(&tmp_file_arr);
 
 	clock_t begin = clock();
+
+	array a = new_array();
+
+	for (int i = 0; tmp_file_str[i]; i++) {
+		array_push_back(&a, tmp_file_str[i]);
+	}
 
 	// Find the longest char in the file
 	unsigned int longest_char = 0;
@@ -152,7 +161,8 @@ void array_exercise(char *filename) {
 }
 
 void list_exercise(char *filename) {
-	list l = new_list();
+	array tmp_file_arr = new_array();
+	wchar_t *tmp_file_str = L"";
 	wchar_t chr = '\n';
 
 	FILE *fileptr = fopen(filename, "r");
@@ -171,11 +181,9 @@ void list_exercise(char *filename) {
 
 	ungetwc(chr, fileptr);
 
-	unsigned int i = 0;
-	// Stores all the file in a list
+	// Stores all the file in a dynamic array
 	while ((chr = fgetwc(fileptr)) != WEOF) {
-		list_push_back(&l, chr);
-		i++;
+		array_push_back(&tmp_file_arr, chr);
 	}
 
 	fclose(fileptr);
@@ -187,9 +195,17 @@ void list_exercise(char *filename) {
 	wprintf(L"\n\n-- List test --");
 
 	wprintf(L"\n\nFile: \"%s\"\n", filename);
-	wprintf(L"Number of characters: %d\n", i);
+	wprintf(L"Number of characters: %d\n", tmp_file_arr.size);
+
+	tmp_file_str = array_to_string(&tmp_file_arr);
 
 	clock_t begin = clock();
+
+	list l = new_list();
+
+	for (int i = 0; tmp_file_str[i]; i++) {
+		list_push_back(&l, tmp_file_str[i]);
+	}
 
 	struct node *data = l.head;
 
