@@ -1,5 +1,4 @@
 #include "array.h"
-#include <stddef.h>
 
 array new_array() {
 	array a;
@@ -100,4 +99,8 @@ wchar_t *array_to_string(array *a) {
 	str[a->size] = '\0';
 
 	return str;
+}
+
+void array_free(array *a) {
+	free(a->data);
 }

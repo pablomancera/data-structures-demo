@@ -9,26 +9,44 @@
 #include "list.h"
 #include "array.h"
 
+void array_exercise(char *filename);
+
 int main() {
 	setlocale(LC_ALL, "");
+	
+	array_exercise("test_1k.txt");
+	array_exercise("test_10k.txt");
+	array_exercise("test_100k.txt");
+	array_exercise("test_1m.txt");
+	array_exercise("test_10m.txt");
+
+	return 0;
+}
+
+void array_exercise(char *filename) {
 	array a = new_array();
 	wchar_t chr = '\n';
 
-	FILE *charptr = fopen("chars.txt", "r");
+	FILE *fileptr = fopen(filename, "r");
 
-	if (!charptr) {
-		wprintf(L"file failed to open");
+	if (!fileptr) {
+		fwprintf(stderr, L"file \"%s\" failed to open. Exiting...\n", filename);
 		abort();
 	}
 
 	// Stores all the file in a dynamic array
-	while ((chr = getwc(charptr)) != WEOF) {
+	while ((chr = getwc(fileptr)) != WEOF) {
 		array_push_back(&a, chr);
 	}
 
-	fclose(charptr);
+	fclose(fileptr);
 
-	wprintf(L"aray size: %d\n", a.size);
+	for (int i = 0; i <= 100; i++) {
+		wprintf(L"-");
+	}
+
+	wprintf(L"\n\nFile: \"%s\"\n", filename);
+	wprintf(L"Array size: %d\n", a.size);
 
 	clock_t begin = clock();
 
@@ -59,7 +77,7 @@ int main() {
 	for (int i = 0; i <= arr_size; i++) {
 
 		//Finds and saves the addres of a string in array to arr_start_wchar
-		if (a.data[i] && !is_reading_wchar && arr_wchar_cursor) {
+		if (a.data[i] && !is_reading_wchar && arr_wchar_cursor && i <= arr_size) {
 			is_reading_wchar = true;
 			arr_start_wchar = &a.data[i];
 			continue;
@@ -95,8 +113,15 @@ int main() {
 
 	clock_t end = clock();
 
-	// wprintf(L"\nNo dup array: %ls\nTime elapsed: %fs\n", array_to_string(&nodup), (double)(end-begin)/CLOCKS_PER_SEC);
-	wprintf(L"No dup array: %ls\nTime elapsed: %fs\nArray size: %d\n", array_to_string(&a), (double)(end-begin)/CLOCKS_PER_SEC, a.size);
+	wprintf(L"No dup array: %ls\n", array_to_string(&a));
+	wprintf(L"Time elapsed: %fs\n", (double)(end-begin)/CLOCKS_PER_SEC);
+	wprintf(L"Array final size: %d\n", a.size);
+	wprintf(L"\n");
+	for (int i = 0; i <= 100; i++) {
+		wprintf(L"-");
+	}
+	wprintf(L"\n\n");
 
-	return 0;
+	array_free(&a);
+	free(chars);
 }

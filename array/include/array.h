@@ -19,3 +19,4 @@ wchar_t array_push_back(array*, wchar_t);
 void array_remove(array*, unsigned int);
 unsigned int array_size(array*);
 wchar_t *array_to_string(array*);
+void array_free(array*);
