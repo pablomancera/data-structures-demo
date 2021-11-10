@@ -73,13 +73,13 @@ void array_exercise(char *filename) {
 
 	array a = new_array();
 
-	for (int i = 0; tmp_file_str[i]; i++) {
+	for (unsigned int i = 0; tmp_file_str[i]; i++) {
 		array_push_back(&a, tmp_file_str[i]);
 	}
 
 	// Find the longest char in the file
 	unsigned int longest_char = 0;
-	for (int i = 0; i < a.size; i++) {
+	for (unsigned int i = 0; i < a.size; i++) {
 		if (a.data[i] > longest_char) {
 			longest_char = a.data[i];
 		}
@@ -101,7 +101,7 @@ void array_exercise(char *filename) {
 	wchar_t *arr_start_null = NULL;	  //The address at the start of null chars.
 	bool is_reading_wchar = false;
 	unsigned int arr_size = a.size;
-	for (int i = 0; i <= arr_size; i++) {
+	for (unsigned int i = 0; i <= arr_size; i++) {
 
 		//Finds and saves the addres of a string in array to arr_start_wchar
 		if (a.data[i] && !is_reading_wchar && arr_wchar_cursor &&
@@ -203,7 +203,7 @@ void list_exercise(char *filename) {
 
 	list l = new_list();
 
-	for (int i = 0; tmp_file_str[i]; i++) {
+	for (unsigned int i = 0; tmp_file_str[i]; i++) {
 		list_push_back(&l, tmp_file_str[i]);
 	}
 

@@ -71,7 +71,7 @@ void array_remove(array *a, unsigned int index) {
 		return;
 	}
 
-	for (int i = index; i <= a->size; i++) {
+	for (unsigned int i = index; i <= a->size; i++) {
 		a->data[i] = a->data[i + 1];
 	}
 
