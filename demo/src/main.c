@@ -105,7 +105,7 @@ void array_exercise(char *filename) {
 
 		//Finds and saves the addres of a string in array to arr_start_wchar
 		if (a.data[i] && !is_reading_wchar && arr_wchar_cursor &&
-				i <= arr_size) {
+				i < arr_size) {
 			is_reading_wchar = true;
 			arr_start_wchar = &a.data[i];
 			continue;
